@@ -1,0 +1,75 @@
+category,item,happiness,coin,value
+Grain,Grain,10,Yellow Coins,1
+Grain,Flour,30,Yellow Coins,5
+Grain,Bread,50,Yellow Coins,12
+Grain,Sandwich,100,Yellow Coins,30
+Meats,Egg,10,Red Coins,1
+Meats,Fish,20,Red Coins,1
+Meats,Raw Chicken,30,Red Coins,2
+Meats,Beef,40,Red Coins,3
+Meats,Cooked Fish,50,Red Coins,3
+Meats,Cooked Chicken,60,Red Coins,5
+Meats,Cooked Beef,70,Red Coins,6
+Meats,Protein Shake,100,Red Coins,8
+Meats,Fish Stew,100,Red Coins,12
+Meats,Meat Stew,100,Red Coins,16
+Fruits & Vegetables,Berries,20,Yellow Coins,1
+Fruits & Vegetables,Carrot,20,Yellow Coins,1
+Fruits & Vegetables,Potato,20,Yellow Coins,1
+Fruits & Vegetables,Tomato,20,Yellow Coins,1
+Fruits & Vegetables,Cactus Fruit,30,Yellow Coins,2
+Fruits & Vegetables,Dragonfruit,30,Yellow Coins,2
+Fruits & Vegetables,Pear,30,Yellow Coins,2
+Fruits & Vegetables,Apple,30,Yellow Coins,2
+Fruits & Vegetables,Jam,50,Red Coins,3
+Fruits & Vegetables,Fruit Juice,50,Red Coins,2
+Fruits & Vegetables,Veggie Stew,100,Yellow Coins,16
+Dairy,Milk,20,Yellow Coins,6
+Dairy,Butter,40,Red Coins,4
+Dairy,Cheese,60,Red Coins,8
+Materials,Planks,20,Yellow Coins,3
+Materials,Stone Brick,20,Red Coins,1
+Materials,Iron Plate,40,Blue Coins,1
+Materials,Reinforced Plank,60,Blue Coins,6
+Clothing,Wool,20,Red Coins,2
+Clothing,Cloth,40,Red Coins,4
+Clothing,Shoe,70,Blue Coins,2
+Clothing,Cloak,70,Blue Coins,8
+Clothing,Shirt,80,Red Coins,10
+Clothing,Warm Coat,100,Blue Coins,12
+Tools,Nails,10,Red Coins,1
+Tools,Wood Axe,80,Red Coins,8
+Tools,Pickaxe,100,Blue Coins,15
+Gadgets,Iron Wheel,10,Blue Coins,4
+Gadgets,Steam Pipe,10,Blue Coins,4
+Gadgets,Wood Wheel,20,Yellow Coins,8
+Gadgets,Cloth Conveyor Belt,40,Yellow Coins,22
+Gadgets,Rail Tile,80,Blue Coins,8
+Gadgets,Metal Conveyor Belt,100,Blue Coins,10
+Bandages,Bandage,80,Red Coins,6
+Bandages,Poultice,100,Red Coins,14
+Bandages,Medical Wrap,100,Red Coins,20
+Potions,Remedy,50,Blue Coins,2
+Potions,Antidote,65,Blue Coins,10
+Potions,Health Potion,80,Blue Coins,8
+Potions,Elixir,100,Purple Coins,4
+Salves,Fish Oil,40,Blue Coins,3
+Salves,Ointment,80,Blue Coins,8
+Spellbooks,Strength Spellbook,100,Red Coins,12
+Spellbooks,Stamina Spellbook,100,Yellow Coins,20
+Spellbooks,Cure Spellbook,100,Blue Coins,8
+Spellbooks,Protection Spellbook,100,Purple Coins,6
+Adv. Gadgets,Mana Pipe,100,Purple Coins,2
+Adv. Gadgets,Magic Rail Tile,100,Purple Coins,8
+Adv. Gadgets,Magic Conveyor Belt,100,Purple Coins,10
+Magic Supplies,Enchanted Book,30,Purple Coins,3
+Magic Supplies,Ward,50,Purple Coins,4
+Magic Supplies,Magic Robe,100,Purple Coins,4
+Magic Supplies,Magic Cloak,100,Purple Coins,10
+Jewely,Crown,100,Yellow Coins,30
+Jewely,Necklace,100,Purple Coins,20
+Jewely,Fire Ring,100,Red Coins,20
+Jewely,Water Ring,100,Blue Coins,20
+Gourmet,Cake,80,Purple Coins,10
+Gourmet,Apple Pie,80,Purple Coins,6
+Gourmet,Berry Cake,100,Purple Coins,18
