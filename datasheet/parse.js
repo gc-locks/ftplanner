@@ -7,12 +7,12 @@ const parseRecipe = csv.parse({ from_line: 2 }, (error, data) => {
     return
   }
 
-  let newData = [];
+  let newData = {};
 
   data.forEach((element) => {
     let row = {
       output: {},
-      input: {},
+      input: [],
       time: parseFloat(element[4]),
       building: element[5],
     };
@@ -28,43 +28,24 @@ const parseRecipe = csv.parse({ from_line: 2 }, (error, data) => {
       if(element[i*2+6] === '') {
         break
       }
-      row.input[element[i*2+6]] = parseInt(element[i*2+7])
+      row.input.push({
+        name: element[i * 2 + 6],
+        quantity: parseInt(element[i * 2 + 7])
+      })
     }
 
-    newData.push(row);
+    for (let key in row.output) {
+      if (row.output.hasOwnProperty(key)) {
+        if (!newData[key]) {
+          newData[key] = [];
+        }
+        newData[key].push(row);
+      }
+    }
   });
 
   //write
   fs.writeFile('../src/assets/recipe.json',JSON.stringify(newData),(error)=>{
-    if(error) {
-      console.log(error);
-    }
-  })
-});
-
-const parseCategory = csv.parse({ from_line: 2 }, (error, data) => {
-  if(error) {
-    console.log(error);
-    return
-  }
-
-  let newData = {};
-
-  data.forEach((element) => {
-    let row = {
-      item: element[1],
-      quantity: parseFloat(element[2]),
-    };
-
-    if(!newData[element[0]]) {
-      newData[element[0]] = [];
-    }
-
-    newData[element[0]].push(row);
-  });
-
-  //write
-  fs.writeFile('../src/assets/category.json',JSON.stringify(newData),(error)=>{
     if(error) {
       console.log(error);
     }
@@ -133,6 +114,5 @@ const parseList = csv.parse((error, data) => {
 });
 
 fs.createReadStream('Factory Town Recipe - Recipe.csv').pipe(parseRecipe);
-fs.createReadStream('Factory Town Recipe - Category.csv').pipe(parseCategory);
 fs.createReadStream('Factory Town Recipe - Sell.csv').pipe(parseSell);
 fs.createReadStream('Factory Town Recipe - List.csv').pipe(parseList);
