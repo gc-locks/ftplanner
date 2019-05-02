@@ -3,7 +3,7 @@
     <p class="name">
       <span class="item">{{ node.item }}</span>
       <select v-if="node.candidates" v-model="selectedIndex">
-        <option v-for="(r,index) in node.candidates" :value="index">{{ recipeString(r) }}</option>
+        <option v-for="(r,index) in node.candidates" :value="index">{{ util.recipeString(r) }}</option>
       </select>
     </p>
     <div class="more" v-if="node.selected">
@@ -45,18 +45,6 @@ export default {
     }
   },
   methods: {
-    recipeString(r) {
-      let inputs = [];
-      for (let i of r.input) {
-        if (i.quantity === 1) {
-          inputs.push(i.name)
-        } else {
-          inputs.push(i.name + ' x ' + i.quantity)
-        }
-      }
-      return ' <- ' + inputs.join(' + ')
-    },
-
     isBuilding(building) {
       return !building.match(/^\(.*\)$/)
     },
