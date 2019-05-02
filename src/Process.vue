@@ -1,77 +1,67 @@
 <template>
-  <div class="process" v-if="recipes[item]">
+  <div class="process">
     <p class="name">
-      <select v-if="recipes[item].length > 1" v-on:change="toggle">
-        <option v-for="(recipe,index) in recipes[item]" :value="index">{{ recipeString(recipe) }}</option>
-      </select>
-      <span v-else class="item">{{ item }}</span> on {{ productionSpeed }} [/s]
+      <span class="item">{{ node.item }}</span>
     </p>
-    <div class="more">
-      <p v-if="isBuilding(recipe)">buildings: {{ recipe.building }} * {{ recipe.time * productionSpeed }}</p>
-      <Process ref="inputs" v-for="i in recipe.input" :item="i.name" :speed="productionSpeed*i.quantity" @changed="$emit('changed')"></Process>
+    <p class="name">
+      <select v-if="node.candidates" v-model="selectedIndex">
+        <option v-for="(r,index) in node.candidates" :value="index">{{ recipeString(r) }}</option>
+      </select>
+    </p>
+    <div class="more" v-if="node.selected">
+      <p v-if="isBuilding(node.selected.recipe.building)">
+        buildings: {{ node.selected.recipe.building }} x {{ node.selected.recipe.time * node.speed }}
+      </p>
+      <Process ref="inputs"
+               v-for="n in node.next"
+               :node="n"
+               :key="n.id"
+               @changed="changed">
+      </Process>
     </div>
   </div>
 </template>
 
 <script>
-import Recipe from './assets/recipe.json'
-
 export default {
   name: "Process",
-  props: ['item', 'speed'],
+  props: ["node"],
   data() {
     return {
-      recipes: Recipe,
-      openIndex: 0
     }
   },
   computed: {
-    recipe() {
-      return this.recipes[this.item] && this.recipes[this.item][this.openIndex]
-    },
-    productionSpeed() {
-      return this.recipe && (this.speed / this.recipe.output[this.item])
+    selectedIndex: {
+      get() {
+        return this.node.selected.index
+      },
+      set(selectedIndex) {
+        this.$emit('changed', {
+          id: this.node.id,
+          selectedIndex,
+        })
+      }
     }
   },
   methods: {
     recipeString(r) {
       let outputs = [];
       for (let key in r.output) {
-        outputs.push(key + ' * ' + r.output[key])
+        outputs.push(key + ' x ' + r.output[key])
       }
       let inputs = [];
       for (let i of r.input) {
-        inputs.push(i.name + ' * ' + i.quantity)
+        inputs.push(i.name + ' x ' + i.quantity)
       }
       return outputs.join(' + ') + ' <- ' + inputs.join(' + ')
     },
 
-    toggle(e) {
-      this.openIndex = e.target.selectedIndex;
-      this.$emit('changed')
+    isBuilding(building) {
+      return !building.match(/^\(.*\)$/)
     },
 
-    isBuilding(r) {
-      return !r.building.match(/^\(.*\)$/)
-    },
-
-    requiredBuildings() {
-      if (!this.recipe) {
-        return []
-      }
-
-      let list = [{
-        building: this.recipe.building,
-        quantity: this.recipe.time * this.productionSpeed,
-      }];
-
-      if (this.$refs.inputs) {
-        for (let c of this.$refs.inputs) {
-          list.push(...c.requiredBuildings())
-        }
-      }
-
-      return list
+    changed(e) {
+      this.$emit('changed', e)
     }
   }
 }
@@ -82,6 +72,6 @@ export default {
   margin: 20px;
 }
 .item {
-  color: blue;
+  color: #666;
 }
 </style>

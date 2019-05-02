@@ -15,9 +15,13 @@
       <button @click="addItem">Add</button>
       <input type="submit" value="Go"/>
     </form>
+
     <hr/>
-    <Process v-for="i in queryItems" ref="items" :item="i.name" :speed="i.speed" @changed="changeResult"></Process>
+
+    <Process2 v-for="i in tree.next" ref="items" :node="i" :key="i.id" @changed="updateTree"></Process2>
+
     <hr/>
+
     <h2>Total</h2>
     <p v-for="(quantity, building) in result">{{ building }} * {{ quantity }}</p>
   </div>
@@ -36,11 +40,12 @@ export default {
       message: 'Hello World',
       recipes: Recipe,
       sells: Sell,
+      tree: {next: []},
       items: q.item || [],
       speeds: q.speed || [],
-      result: {},
     };
   },
+
   computed: {
     queryItems() {
       let q = queryString.parse(location.search, {arrayFormat: 'index'});
@@ -52,22 +57,10 @@ export default {
         })
       }
       return items
-    }
-  },
-  methods: {
-    addItem(e) {
-      e.preventDefault();
-      this.items.push('');
-      this.speeds.push('');
-      return false
     },
-    changeResult() {
-      let buildings = [];
-      if (this.$refs.items) {
-        for (let c of this.$refs.items) {
-          buildings.push(...c.requiredBuildings());
-        }
-      }
+
+    result() {
+      let buildings = this.getBuildings(this.tree.next);
 
       let result = {};
       for (let b of buildings) {
@@ -76,14 +69,97 @@ export default {
         }
         result[b.building] += b.quantity
       }
-      this.result = result;
+      return result
     }
   },
-  mounted() {
-    this.changeResult();
+
+  methods: {
+    addItem(e) {
+      e.preventDefault();
+      this.items.push('');
+      this.speeds.push('');
+      return false
+    },
+
+    getBuildings(nodes) {
+      let buildings = [];
+      for (let n of nodes) {
+        if (!n.selected) {
+          continue;
+        }
+
+        buildings.push({
+          item: n.item,
+          building: n.selected.recipe.building,
+          quantity: n.speed * n.selected.recipe.time
+        });
+
+        buildings.push(...this.getBuildings(n.next));
+      }
+      return buildings
+    },
+
+    createNode(id, item, speed) {
+      let node = {
+        id: id,
+        item: item,
+        speed: speed,
+        next: [],
+      };
+
+      let candidates = this.recipes[item];
+      if (!candidates) {
+        node.candidates = undefined;
+        node.selected = undefined;
+        return node;
+      }
+
+      if (candidates.length > 1) {
+        node.candidates = candidates;
+      } else {
+        node.candidates = undefined;
+      }
+
+      this.setNext(node, 0);
+
+      return node
+    },
+
+    setNext(node, selectedIndex) {
+      node.selected = {
+        index: selectedIndex,
+        recipe: this.recipes[node.item][selectedIndex]
+      };
+
+      let next = [];
+      for (let i in node.selected.recipe.input) {
+        if (node.selected.recipe.input.hasOwnProperty(i)) {
+          let r = node.selected.recipe.input[i];
+          let s = node.speed * r.quantity / node.selected.recipe.output[node.item];
+          next.push(this.createNode(node.id + '-' + i, r.name, s));
+        }
+      }
+      node.next = next
+    },
+
+    updateTree(e) {
+      let node = this.tree;
+      for (let s of e.id.split('-')) {
+        node = node.next[parseInt(s)]
+      }
+
+      this.setNext(node, e.selectedIndex);
+    }
   },
+
+  mounted() {
+    this.tree = {
+      next: [this.createNode('' + 0, 'Rail Tile', 0.5)]
+    };
+  },
+
   components: {
-    Process,
+    Process2: Process,
   }
 };
 </script>
