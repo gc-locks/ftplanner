@@ -19,7 +19,7 @@
 
     <hr/>
 
-    <Process2 v-for="i in tree.next" ref="items" :node="i" :key="i.id" @changed="updateTree"></Process2>
+    <Process v-for="i in tree.next" ref="items" :node="i" :key="i.id" @changed="updateTree"></Process>
 
     <hr/>
 
@@ -180,7 +180,7 @@ export default {
   },
 
   components: {
-    Process2: Process,
+    Process,
   }
 };
 </script>
