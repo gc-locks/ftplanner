@@ -7,7 +7,7 @@
       </select>
     </p>
     <div class="more" v-if="node.selected">
-      <p v-if="isBuilding(node.selected.recipe.building)">
+      <p v-if="util.isBuilding(node.selected.recipe.building)">
         buildings: {{ node.selected.recipe.building }} x {{ util.humanizedNumber(node.selected.recipe.time * node.speed) }}
       </p>
       <Process ref="inputs"
@@ -45,10 +45,6 @@ export default {
     }
   },
   methods: {
-    isBuilding(building) {
-      return !building.match(/^\(.*\)$/)
-    },
-
     changed(e) {
       this.$emit('changed', e)
     }

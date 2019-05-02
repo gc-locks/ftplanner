@@ -36,7 +36,23 @@
     <hr/>
 
     <h2>Total</h2>
-    <p v-for="(quantity, building) in result">{{ building }} * {{ util.humanizedNumber(quantity)}}</p>
+    <table>
+      <thead>
+
+      </thead>
+      <tbody>
+      <template v-for="(b, building) in result">
+        <tr v-for="(item, index) in b.itemsArray">
+          <td v-if="index === 0" :rowspan="b.itemsArray.length">
+            {{ building }} x {{ util.humanizedNumber(b.sum) }}
+          </td>
+          <td>
+            {{ util.humanizedNumber(item.quantity) }} for {{ item.name }}
+          </td>
+        </tr>
+      </template>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -84,13 +100,40 @@ export default {
   computed: {
     result() {
       let buildings = this.getBuildings(this.tree.next);
+      buildings = buildings.filter(function (i) {
+        return util.isBuilding(i.building)
+      });
 
       let result = {};
       for (let b of buildings) {
         if (!result[b.building]) {
-          result[b.building] = 0
+          result[b.building] = {
+            sum: 0,
+            items: {}
+          }
         }
-        result[b.building] += b.quantity
+        let r = result[b.building];
+
+        r.sum += b.quantity;
+
+        if (!r.items[b.item]) {
+          r.items[b.item] = 0;
+        }
+        r.items[b.item] += b.quantity;
+      }
+
+      for (let b in result) {
+        let r = result[b];
+
+        let itemsArray = [];
+        for (let i in r.items) {
+          itemsArray.push({
+            name: i,
+            quantity: r.items[i]
+          });
+        }
+
+        r.itemsArray = itemsArray
       }
       return result
     }
@@ -217,4 +260,11 @@ export default {
 </script>
 
 <style>
+table {
+  border-collapse: collapse;
+}
+td {
+  border: 1px solid #aaa;
+  padding: 3px 5px;
+}
 </style>

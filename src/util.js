@@ -5,6 +5,11 @@ module.exports = {
     }
     return num.toPrecision(2)
   },
+
+  isBuilding(building) {
+    return !building.match(/^\(.*\)$/)
+  },
+
   recipeString(r) {
     let inputs = [];
     for (let i of r.input) {
