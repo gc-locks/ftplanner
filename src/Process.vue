@@ -2,15 +2,13 @@
   <div class="process">
     <p class="name">
       <span class="item">{{ node.item }}</span>
-    </p>
-    <p class="name">
       <select v-if="node.candidates" v-model="selectedIndex">
         <option v-for="(r,index) in node.candidates" :value="index">{{ recipeString(r) }}</option>
       </select>
     </p>
     <div class="more" v-if="node.selected">
       <p v-if="isBuilding(node.selected.recipe.building)">
-        buildings: {{ node.selected.recipe.building }} x {{ node.selected.recipe.time * node.speed }}
+        buildings: {{ node.selected.recipe.building }} x {{ util.humanizedNumber(node.selected.recipe.time * node.speed) }}
       </p>
       <Process ref="inputs"
                v-for="n in node.next"
@@ -23,11 +21,14 @@
 </template>
 
 <script>
+import util from './util.js'
+
 export default {
   name: "Process",
   props: ["node"],
   data() {
     return {
+      util
     }
   },
   computed: {
@@ -45,15 +46,15 @@ export default {
   },
   methods: {
     recipeString(r) {
-      let outputs = [];
-      for (let key in r.output) {
-        outputs.push(key + ' x ' + r.output[key])
-      }
       let inputs = [];
       for (let i of r.input) {
-        inputs.push(i.name + ' x ' + i.quantity)
+        if (i.quantity === 1) {
+          inputs.push(i.name)
+        } else {
+          inputs.push(i.name + ' x ' + i.quantity)
+        }
       }
-      return outputs.join(' + ') + ' <- ' + inputs.join(' + ')
+      return ' <- ' + inputs.join(' + ')
     },
 
     isBuilding(building) {
