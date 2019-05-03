@@ -16899,10 +16899,10 @@ new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
 module.exports = {
   humanizedNumber: function humanizedNumber(num) {
     if (num > 10.0) {
-      return num.toFixed(0);
+      return num.toFixed(1);
     }
 
-    return num.toPrecision(2);
+    return num.toPrecision(3);
   },
   isBuilding: function isBuilding(building) {
     return !building.match(/^\(.*\)$/);
