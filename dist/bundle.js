@@ -201,6 +201,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -345,12 +346,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     addItem: function addItem(e) {
-      e.preventDefault();
       this.params.items.push({
         item: '',
         speed: 0
       });
-      return false;
+    },
+    removeItem: function removeItem(e) {
+      this.params.items = this.params.items.filter(function (i, index) {
+        return index !== e;
+      });
     },
     updateParams: function updateParams(callback) {
       this.params.items = this.params.items.filter(function (i) {
@@ -1303,7 +1307,7 @@ var render = function() {
         "form",
         { on: { submit: _vm.submit } },
         [
-          _vm._l(_vm.params.items, function(i) {
+          _vm._l(_vm.params.items, function(i, index) {
             return _c("div", [
               _c(
                 "select",
@@ -1375,7 +1379,19 @@ var render = function() {
                   }
                 }
               }),
-              _vm._v(" [/s]\n    ")
+              _vm._v(" [/s]\n      "),
+              _c(
+                "button",
+                {
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.removeItem(index)
+                    }
+                  }
+                },
+                [_vm._v("Remove")]
+              )
             ])
           }),
           _vm._v(" "),
@@ -1479,9 +1495,13 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _c("input", { attrs: { type: "submit", value: "Go" } }),
+          _c("button", { attrs: { type: "submit" } }, [_vm._v("Go")]),
           _vm._v(" "),
-          _c("button", { on: { click: _vm.addItem } }, [_vm._v("Add")])
+          _c(
+            "button",
+            { attrs: { type: "button" }, on: { click: _vm.addItem } },
+            [_vm._v("Add")]
+          )
         ],
         2
       ),

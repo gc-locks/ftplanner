@@ -2,7 +2,7 @@
   <div id="app">
     <h2>Required items and production speeds</h2>
     <form @submit="submit">
-      <div v-for="i in params.items">
+      <div v-for="(i,index) in params.items">
         <select v-model="i.item">
           <option disabled value="">-- Choose one ---</option>
           <optgroup v-for="(list, category) in sells" :label="category">
@@ -10,6 +10,7 @@
           </optgroup>
         </select>
         <input type="text" v-model="i.speed"/> [/s]
+        <button type="button" @click="removeItem(index)">Remove</button>
       </div>
       <p>
         <label>
@@ -25,8 +26,8 @@
           </select>
         </div>
       </div>
-      <input type="submit" value="Go"/>
-      <button @click="addItem">Add</button>
+      <button type="submit">Go</button>
+      <button type="button" @click="addItem">Add</button>
     </form>
 
     <hr/>
@@ -161,12 +162,16 @@ export default {
 
   methods: {
     addItem(e) {
-      e.preventDefault();
       this.params.items.push({
         item: '',
         speed: 0,
       });
-      return false
+    },
+
+    removeItem(e) {
+      this.params.items = this.params.items.filter(function (i, index) {
+        return index !== e;
+      })
     },
 
     updateParams(callback) {
