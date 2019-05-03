@@ -196,6 +196,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -246,7 +251,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       buildings = buildings.filter(function (i) {
         return _util_js__WEBPACK_IMPORTED_MODULE_3___default.a.isBuilding(i.building);
       });
-      var result = {};
+      var resultBuildings = {};
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -255,14 +260,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         for (var _iterator = buildings[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var _b = _step.value;
 
-          if (!result[_b.building]) {
-            result[_b.building] = {
+          if (!resultBuildings[_b.building]) {
+            resultBuildings[_b.building] = {
               sum: 0,
               items: {}
             };
           }
 
-          var _r = result[_b.building];
+          var _r = resultBuildings[_b.building];
           _r.sum += _b.quantity;
 
           if (!_r.items[_b.item]) {
@@ -286,8 +291,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }
 
-      for (var b in result) {
-        var r = result[b];
+      for (var b in resultBuildings) {
+        var r = resultBuildings[b];
         var itemsArray = [];
 
         for (var i in r.items) {
@@ -300,7 +305,42 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         r.itemsArray = itemsArray;
       }
 
-      return result;
+      var consumptions = this.getConsumptions(this.tree.next);
+      console.log(consumptions);
+      var resultConsumptions = {};
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = consumptions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var c = _step2.value;
+
+          if (!resultConsumptions[c.item]) {
+            resultConsumptions[c.item] = 0;
+          }
+
+          resultConsumptions[c.item] += c.quantity;
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return {
+        buildings: resultBuildings,
+        consumptions: resultConsumptions
+      };
     }
   },
   methods: {
@@ -329,13 +369,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     getBuildings: function getBuildings(nodes) {
       var buildings = [];
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator2 = nodes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var n = _step2.value;
+        for (var _iterator3 = nodes[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var n = _step3.value;
 
           if (!n.selected) {
             continue;
@@ -349,21 +389,57 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           buildings.push.apply(buildings, _toConsumableArray(this.getBuildings(n.next)));
         }
       } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-            _iterator2["return"]();
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
           }
         } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
+          if (_didIteratorError3) {
+            throw _iteratorError3;
           }
         }
       }
 
       return buildings;
+    },
+    getConsumptions: function getConsumptions(nodes) {
+      var consumptions = [];
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = nodes[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var n = _step4.value;
+
+          if (!n.selected) {
+            consumptions.push({
+              item: n.item,
+              quantity: n.speed
+            });
+          }
+
+          consumptions.push.apply(consumptions, _toConsumableArray(this.getConsumptions(n.next)));
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+            _iterator4["return"]();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
+      return consumptions;
     },
     createNode: function createNode(id, item, speed) {
       var node = {
@@ -414,26 +490,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     updateTree: function updateTree(e) {
       var node = this.tree;
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
 
       try {
-        for (var _iterator3 = e.id.split('-')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var s = _step3.value;
+        for (var _iterator5 = e.id.split('-')[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var s = _step5.value;
           node = node.next[parseInt(s)];
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-            _iterator3["return"]();
+          if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+            _iterator5["return"]();
           }
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          if (_didIteratorError5) {
+            throw _iteratorError5;
           }
         }
       }
@@ -1426,25 +1502,31 @@ var render = function() {
       _vm._v(" "),
       _c("h2", [_vm._v("Total")]),
       _vm._v(" "),
+      _c("h3", [_vm._v("Buildings")]),
+      _vm._v(" "),
       _c("table", [
         _c("thead"),
         _vm._v(" "),
         _c(
           "tbody",
           [
-            _vm._l(_vm.result, function(b, building) {
-              return _vm._l(b.itemsArray, function(item, index) {
+            _vm._l(_vm.result.buildings, function(building, buildingName) {
+              return _vm._l(building.itemsArray, function(item, index) {
                 return _c("tr", [
                   index === 0
-                    ? _c("td", { attrs: { rowspan: b.itemsArray.length } }, [
-                        _vm._v(
-                          "\n          " +
-                            _vm._s(building) +
-                            " x " +
-                            _vm._s(_vm.util.humanizedNumber(b.sum)) +
-                            "\n        "
-                        )
-                      ])
+                    ? _c(
+                        "td",
+                        { attrs: { rowspan: building.itemsArray.length } },
+                        [
+                          _vm._v(
+                            "\n          " +
+                              _vm._s(buildingName) +
+                              " x " +
+                              _vm._s(_vm.util.humanizedNumber(building.sum)) +
+                              "\n        "
+                          )
+                        ]
+                      )
                     : _vm._e(),
                   _vm._v(" "),
                   _c("td", [
@@ -1462,7 +1544,21 @@ var render = function() {
           ],
           2
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _c("h3", [_vm._v("Consumptions")]),
+      _vm._v(" "),
+      _vm._l(_vm.result.consumptions, function(quantity, name) {
+        return _c("p", [
+          _vm._v(
+            "\n    " +
+              _vm._s(name) +
+              " x " +
+              _vm._s(_vm.util.humanizedNumber(quantity)) +
+              "\n  "
+          )
+        ])
+      })
     ],
     2
   )

@@ -36,15 +36,16 @@
     <hr/>
 
     <h2>Total</h2>
+    <h3>Buildings</h3>
     <table>
       <thead>
 
       </thead>
       <tbody>
-      <template v-for="(b, building) in result">
-        <tr v-for="(item, index) in b.itemsArray">
-          <td v-if="index === 0" :rowspan="b.itemsArray.length">
-            {{ building }} x {{ util.humanizedNumber(b.sum) }}
+      <template v-for="(building, buildingName) in result.buildings">
+        <tr v-for="(item, index) in building.itemsArray">
+          <td v-if="index === 0" :rowspan="building.itemsArray.length">
+            {{ buildingName }} x {{ util.humanizedNumber(building.sum) }}
           </td>
           <td>
             {{ util.humanizedNumber(item.quantity) }} for {{ item.name }}
@@ -53,6 +54,10 @@
       </template>
       </tbody>
     </table>
+    <h3>Consumptions</h3>
+    <p v-for="(quantity, name) in result.consumptions">
+      {{ name }} x {{ util.humanizedNumber(quantity) }}
+    </p>
   </div>
 </template>
 
@@ -104,15 +109,15 @@ export default {
         return util.isBuilding(i.building)
       });
 
-      let result = {};
+      let resultBuildings = {};
       for (let b of buildings) {
-        if (!result[b.building]) {
-          result[b.building] = {
+        if (!resultBuildings[b.building]) {
+          resultBuildings[b.building] = {
             sum: 0,
             items: {}
           }
         }
-        let r = result[b.building];
+        let r = resultBuildings[b.building];
 
         r.sum += b.quantity;
 
@@ -122,8 +127,8 @@ export default {
         r.items[b.item] += b.quantity;
       }
 
-      for (let b in result) {
-        let r = result[b];
+      for (let b in resultBuildings) {
+        let r = resultBuildings[b];
 
         let itemsArray = [];
         for (let i in r.items) {
@@ -135,7 +140,22 @@ export default {
 
         r.itemsArray = itemsArray
       }
-      return result
+
+      let consumptions = this.getConsumptions(this.tree.next);
+      console.log(consumptions);
+
+      let resultConsumptions = {};
+      for (let c of consumptions) {
+        if (!resultConsumptions[c.item]) {
+          resultConsumptions[c.item] = 0;
+        }
+        resultConsumptions[c.item] += c.quantity;
+      }
+
+      return {
+        buildings: resultBuildings,
+        consumptions: resultConsumptions,
+      }
     }
   },
 
@@ -178,6 +198,21 @@ export default {
         buildings.push(...this.getBuildings(n.next));
       }
       return buildings
+    },
+
+    getConsumptions(nodes) {
+      let consumptions = [];
+      for (let n of nodes) {
+        if (!n.selected) {
+          consumptions.push({
+            item: n.item,
+            quantity: n.speed
+          });
+        }
+
+        consumptions.push(...this.getConsumptions(n.next));
+      }
+      return consumptions
     },
 
     createNode(id, item, speed) {
